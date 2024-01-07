@@ -31,16 +31,17 @@ int my_utf8_encode(const char *input, char *output) {
                 output[j + 1] = (slice_hex & 0b00111111) | 0b10000000;
                 j += 1;
             } else if (slice_hex <= 0xFFFF) {
-                // 3 ones followed by first 4 bits
+                // 3 ones followed 0 and by first 4 bits
                 output[j] = (slice_hex >> 12) | 0b11100000;
-                //10 followed by 5 bits
+                //10 followed by 6 bits
                 output[j + 1] = ((slice_hex >> 6) & 0b00111111) | 0b10000000;
                 // 10 followed by 6 bits
                 output[j + 2] = (slice_hex & 0b00111111) | 0b10000000;
                 j += 2;
             } else if (slice_hex <= 0x10FFFF) {
-                // four ones followed by 3 bits
+                // four ones followed by 0 annd 3 bits
                 output[j] = (slice_hex >> 18) | 0b11110000;
+                // 10 followed by 6 bits...
                 output[j + 1] = ((slice_hex >> 12) & 0b00111111) | 0b10000000;
                 output[j + 2] = ((slice_hex >> 6) & 0b00111111) | 0b10000000;
                 output[j + 3] = (slice_hex & 0b00111111) | 0b10000000;
@@ -51,8 +52,8 @@ int my_utf8_encode(const char *input, char *output) {
             // ascii latters go unchanged
             output[j] = input[i];
         }
-        if (input[i] == '\0')
-            output[j] = '\0';  // Null-terminate the output string
+        if (input[i+1] == '\0')
+            output[j] = '\0';  // add the null to the output string
     }
     return 0;
 }
@@ -90,7 +91,7 @@ int my_utf8_decode(unsigned char *input, unsigned char *output) {
         if ((input[i] & 0b10000000) == 0x00) {
             output[j] = input[i];
         }
-            // if first 2 bits are 110
+            // if first bits are 110 (2 byte utf8)
         else if ((0b11100000 & input[i]) == 0b11000000) {
             output[j] = '\\';
             output[j + 1] = 'u';
@@ -100,6 +101,7 @@ int my_utf8_decode(unsigned char *input, unsigned char *output) {
             snprintf((char *)&output[j + 2], 6, "%04X", part3);
             i += 1;
             j += 4;
+            // if first bits are 1110 (3 byte utf8)
         } else if ((0b11110000 & input[i]) == 0b11100000) {
             output[j] = '\\';
             output[j + 1] = 'u';
@@ -110,6 +112,7 @@ int my_utf8_decode(unsigned char *input, unsigned char *output) {
             snprintf((char *)&output[j + 2], 6, "%04X", unicodeValue);
             i += 2;
             j += 4;
+            // if first bits are 11110 (4 byte utf8)
         } else if ((0b11111000 & input[i]) == 0b11110000) {
             output[j] = '\\';
             output[j + 1] = 'u';
@@ -123,7 +126,7 @@ int my_utf8_decode(unsigned char *input, unsigned char *output) {
             j += 4;
         }
         if (input[i] == '\0')
-            output[j] = '\0';  // Null-terminate the output string
+            output[j] = '\0';  // add the null to the output string
     }
     return 0;
 }
@@ -357,8 +360,8 @@ int main() {
 
     // Test my_utf8_encode
     test_my_utf8_encode("a", "a");
-    test_my_utf8_encode("\u05D0\u05E8\u05D9\u05D4", "אריה");
-    test_my_utf8_encode("Hello \u05D0\u05E8\u05D9\u05D4", "Hello אריה");
+    test_my_utf8_encode("\\u05D0\\u05E8\\u05D9\\u05D4", "אריה");
+    test_my_utf8_encode("Hello \\u05D0\\u05E8\\u05D9\\u05D4", "Hello אריה");
 
 
     //testing check
@@ -387,8 +390,8 @@ int main() {
 
     //test my_utf8_decode
     test_my_utf8_decode("a", "a");
-    test_my_utf8_decode("\u05D0\u05E8\u05D9\u05D4", "אריה");
-    test_my_utf8_decode("Hello \u05D0\u05E8\u05D9\u05D4", "Hello אריה");
+    test_my_utf8_decode("\\u05D0\\u05E8\\u05D9\\u05D4", "אריה");
+    test_my_utf8_decode("Hello \\u05D0\\u05E8\\u05D9\\u05D4", "Hello אריה");
 
     char string1[] = "אריה";
     char string2[] = "אריה";
