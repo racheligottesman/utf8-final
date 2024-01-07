@@ -247,7 +247,7 @@ int test_my_utf8_encode(char *input, char *expected_output) {
     my_utf8_encode(input, output);
     int result = my_utf8_strcmp(output, expected_output);
     if (!result) {
-        printf("Test failed: %s\n", input);
+        printf("encode Test failed: %s\n", input);
         printf("Expected: %s\n", expected_output);
         printf("Got: %s\n", output);
         return 1;
@@ -265,7 +265,7 @@ int test_my_utf8_decode(char *expected_output, char *input) {
     my_utf8_decode(input, output);
     int result = my_utf8_strcmp(output, expected_output);
     if (!result) {
-        printf("Test failed: %s\n", input);
+        printf("decode Test failed: %s\n", input);
         printf("Expected: %s\n", expected_output);
         printf("Got: %s\n", output);
         return 1;
@@ -277,7 +277,7 @@ int test_my_utf8_decode(char *expected_output, char *input) {
 int test_my_utf8_check(char *input, int expected_output) {
     int result = my_utf8_check(input);
     if (!(result == expected_output)) {
-        printf("Test failed: %s\n", input);
+        printf("check Test failed: %s\n", input);
         printf("Expected: %d\n", expected_output);
         printf("Got: %d\n", result);
         return 1;
@@ -289,7 +289,7 @@ int test_my_utf8_check(char *input, int expected_output) {
 int test_my_utf8_strcomp(char *input1, char *input2 ,int expected_output) {
     int result = my_utf8_strcmp(input1, input2);
     if (!(result == expected_output)) {
-        printf("Test failed: %s, %s\n", input1, input2);
+        printf("strcomp Test failed: %s, %s\n", input1, input2);
         printf("Expected: %d\n", expected_output);
         printf("Got: %d\n", result);
         return 1;
@@ -301,7 +301,7 @@ int test_my_utf8_strcomp(char *input1, char *input2 ,int expected_output) {
 int test_my_utf8_strGreater(char *input1, char *input2 ,int expected_output) {
     int result = my_utf8_strGreater(input1, input2);
     if (!(result == expected_output)) {
-        printf("Test failed: %s, %s\n", input1, input2);
+        printf("strGreater Test failed: %s, %s\n", input1, input2);
         printf("Expected: %d\n", expected_output);
         printf("Got: %d\n", result);
         return 1;
@@ -314,7 +314,7 @@ int test_my_utf8_strlen(char *input ,int expected_output) {
     int length = 0;
     my_utf8_strLen(input, &length);
     if (!(length == expected_output)) {
-        printf("Test failed: %s\n", input);
+        printf("strlen Test failed: %s\n", input);
         printf("Expected: %d\n", expected_output);
         printf("Got: %d\n", length);
         return 1;
@@ -328,7 +328,7 @@ int test_my_utf8_charat(char *input, char *expected_output, int index) {
     char *ans = my_utf8_charat(input, index);
     int result = my_utf8_strcmp(ans, expected_output);
     if (!result) {
-        printf("Test failed: %s\n", input);
+        printf("charat Test failed: %s\n", input);
         printf("Expected: %d\n", expected_output);
         printf("Got: %d\n", result);
         return 1;
@@ -341,7 +341,7 @@ int test_my_utf8_numBytes(char *input ,int expected_output) {
     int length = 0;
     my_utf8_numBytes(input, &length);
     if (!(length == expected_output)) {
-        printf("Test failed: %s\n", input);
+        printf("numBytes Test failed: %s\n", input);
         printf("Expected: %d\n", expected_output);
         printf("Got: %d\n", length);
         return 1;
